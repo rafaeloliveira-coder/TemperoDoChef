@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marmitaria do Chef</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --laranja: #E8520A;
+    --laranja-claro: #FFF0E8;
+    --laranja-borda: #F4854A;
+    --verde: #2D6A4F;
+    --verde-claro: #E8F5EE;
+    --amarelo: #F5A623;
+    --cinza-bg: #FAF8F5;
+    --cinza-card: #FFFFFF;
+    --texto: #1C1A17;
+    --texto-suave: #6B6560;
+    --borda: #E8E2D8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cinza-bg);
+    color: var(--texto);
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--laranja);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(232,82,10,0.25);
+  }
+
+  .header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -0.5px;
+  }
+
+  .logo span {
+    color: #FFD6B8;
+  }
+
+  .cart-btn {
+    background: rgba(255,255,255,0.2);
+    border: 1.5px solid rgba(255,255,255,0.4);
+    color: #fff;
+    padding: 8px 18px;
+    border-radius: 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+  }
+
+  .cart-btn:hover { background: rgba(255,255,255,0.32); }
+
+  .cart-count {
+    background: #fff;
+    color: var(--laranja);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #E8520A 0%, #C94008 100%);
+    padding: 40px 24px;
+    text-align: center;
+    color: #fff;
+  }
+
+  .hero h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 34px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .hero p { font-size: 15px; opacity: 0.85; }
+
+  .main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px 16px 120px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--texto);
+    margin: 32px 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--borda);
+  }
+
+  .emoji-icon { font-size: 22px; }
+
+  /* MARMITA CARDS */
+  .marmita-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+
+  .marmita-card {
+    background: var(--cinza-card);
+    border: 1.5px solid var(--borda);
+    border-radius: 16px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .marmita-card:hover {
+    border-color: var(--laranja-borda);
+    box-shadow: 0 4px 20px rgba(232,82,10,0.12);
+  }
+
+  .marmita-card.selected {
+    border-color: var(--laranja);
+    border-width: 2px;
+    background: var(--laranja-claro);
+  }
+
+  .marmita-card.selected::before {
+    content: '✓';
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: var(--laranja);
+    color: #fff;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .marmita-tag {
+    display: inline-block;
+    background: var(--laranja);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .marmita-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .marmita-weight {
+    font-size: 13px;
+    color: var(--texto-suave);
+    margin-bottom: 12px;
+  }
+
+  .marmita-price {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--laranja);
+  }
+
+  .marmita-info {
+    font-size: 12px;
+    color: var(--texto-suave);
+    margin-top: 4px;
+  }
+
+  /* PROTEINAS */
+  .proteinas-section {
+    background: var(--cinza-card);
+    border: 1.5px solid var(--borda);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 8px;
+  }
+
+  .proteinas-notice {
+    background: var(--laranja-claro);
+    border: 1px solid var(--laranja-borda);
+    color: #8B2E00;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 16px;
+  }
+
+  .proteinas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+  }
+
+  .proteina-item {
+    border: 1.5px solid var(--borda);
+    border-radius: 10px;
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    user-select: none;
+  }
+
+  .proteina-item:hover {
+    border-color: var(--laranja-borda);
+    background: var(--laranja-claro);
+  }
+
+  .proteina-item.selected {
+    border-color: var(--laranja);
+    border-width: 2px;
+    background: var(--laranja-claro);
+    color: #8B2E00;
+  }
+
+  .proteina-item.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .proteina-check {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--borda);
+    flex-shrink: 0;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+  }
+
+  .proteina-item.selected .proteina-check {
+    background: var(--laranja);
+    border-color: var(--laranja);
+    color: #fff;
+  }
+
+  /* GUARNICOES */
+  .guarnicoes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 8px;
+  }
+
+  .guarnicao-item {
+    border: 1.5px solid var(--borda);
+    border-radius: 10px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: #fff;
+    user-select: none;
+  }
+
+  .guarnicao-item:hover { border-color: var(--verde); background: var(--verde-claro); }
+
+  .guarnicao-item.selected {
+    border-color: var(--verde);
+    border-width: 2px;
+    background: var(--verde-claro);
+    color: #1A4D36;
+  }
+
+  .guarnicao-item .g-check {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    border: 2px solid var(--borda);
+    flex-shrink: 0;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+  }
+
+  .guarnicao-item.selected .g-check {
+    background: var(--verde);
+    border-color: var(--verde);
+    color: #fff;
+  }
+
+  /* BEBIDAS */
+  .bebidas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+  }
+
+  .bebida-item {
+    border: 1.5px solid var(--borda);
+    border-radius: 12px;
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: #fff;
+    user-select: none;
+  }
+
+  .bebida-item:hover { border-color: #3B82F6; background: #EFF6FF; }
+
+  .bebida-item.selected {
+    border-color: #1D6FDE;
+    border-width: 2px;
+    background: #EFF6FF;
+  }
+
+  .bebida-nome {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: var(--texto);
+  }
+
+  .bebida-preco {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1D6FDE;
+  }
+
+  /* PORCAO BAIAO */
+  .extra-card {
+    background: #fff;
+    border: 1.5px solid var(--borda);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .extra-card:hover { border-color: var(--amarelo); background: #FFFBEB; }
+  .extra-card.selected { border-color: #C57B00; border-width: 2px; background: #FFFBEB; }
+
+  .extra-info h4 { font-size: 16px; font-weight: 600; margin-bottom: 3px; }
+  .extra-info p { font-size: 13px; color: var(--texto-suave); }
+  .extra-preco { font-size: 20px; font-weight: 600; color: #B07000; }
+
+  /* QTD COUNTER */
+  .qty-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .qty-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1.5px solid var(--borda);
+    background: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: all 0.15s;
+  }
+
+  .qty-btn:hover { border-color: var(--laranja); color: var(--laranja); }
+  .qty-num { font-size: 16px; font-weight: 600; min-width: 24px; text-align: center; }
+
+  /* OBS */
+  .obs-textarea {
+    width: 100%;
+    min-height: 80px;
+    border: 1.5px solid var(--borda);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--texto);
+    resize: vertical;
+    background: #fff;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .obs-textarea:focus { border-color: var(--laranja); }
+
+  /* RESUMO FLUTUANTE */
+  .resumo-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #1C1A17;
+    padding: 16px 24px;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+  }
+
+  .resumo-total {
+    color: #fff;
+  }
+
+  .resumo-total label {
+    font-size: 12px;
+    opacity: 0.6;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .resumo-total span {
+    font-size: 22px;
+    font-weight: 600;
+    color: #FFD6B8;
+  }
+
+  .btn-pedido {
+    background: var(--laranja);
+    color: #fff;
+    border: none;
+    padding: 13px 28px;
+    border-radius: 28px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-pedido:hover { background: #C94008; }
+  .btn-pedido:active { transform: scale(0.97); }
+  .btn-pedido:disabled { background: #888; cursor: not-allowed; }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 500;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--cinza-bg);
+    border-radius: 24px 24px 0 0;
+    width: 100%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 24px 20px 40px;
+    animation: slideUp 0.3s ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(40px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .modal-close {
+    background: var(--borda);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--texto-suave);
+  }
+
+  .resumo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--borda);
+    font-size: 14px;
+  }
+
+  .resumo-item:last-child { border-bottom: none; }
+  .resumo-item-nome { font-weight: 500; }
+  .resumo-item-detalhe { font-size: 12px; color: var(--texto-suave); margin-top: 2px; }
+  .resumo-item-preco { font-weight: 600; color: var(--laranja); white-space: nowrap; }
+
+  .resumo-total-final {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 0 0;
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 4px;
+  }
+
+  .btn-whatsapp {
+    width: 100%;
+    background: #25D366;
+    color: #fff;
+    border: none;
+    padding: 15px;
+    border-radius: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s;
+  }
+
+  .btn-whatsapp:hover { background: #1BB256; }
+
+  /* CLIENTE */
+  .campo-group {
+    margin-bottom: 14px;
+  }
+
+  .campo-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--texto-suave);
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .campo-input {
+    width: 100%;
+    border: 1.5px solid var(--borda);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--texto);
+    background: #fff;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .campo-input:focus { border-color: var(--laranja); }
+
+  .error-msg {
+    background: #FDECEA;
+    border: 1px solid #F5B5B5;
+    color: #8B1A1A;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 14px;
+    display: none;
+  }
+
+  .entrega-toggle {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .toggle-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1.5px solid var(--borda);
+    background: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--texto-suave);
+  }
+
+  .toggle-btn.active-retirada {
+    border-color: var(--verde);
+    border-width: 2px;
+    background: var(--verde-claro);
+    color: #1A4D36;
+    font-weight: 600;
+  }
+
+  .toggle-btn.active-entrega {
+    border-color: var(--laranja);
+    border-width: 2px;
+    background: var(--laranja-claro);
+    color: #8B2E00;
+    font-weight: 600;
+  }
+
+  .entrega-fields { display: none; }
+  .entrega-fields.show { display: block; }
+
+  .campo-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  @media (max-width: 480px) {
+    .campo-row { grid-template-columns: 1fr; }
+  }
+
+  .taxa-info {
+    background: var(--laranja-claro);
+    border: 1px solid var(--laranja-borda);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #8B2E00;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .taxa-valor {
+    font-weight: 700;
+    font-size: 15px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">🍱 Marmita <span>Express</span></div>
+    <button class="cart-btn" onclick="abrirModal()">
+      🛒 Pedido
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </div>
+</header>
+
+<div class="hero">
+  <h2>Monte sua marmita! 🔥</h2>
+  <p>Comida caseira, feita com carinho todos os dias</p>
+</div>
+
+<div class="main">
+
+  <!-- DADOS DO CLIENTE -->
+  <div class="section-title"><span class="emoji-icon">👤</span> Seus dados</div>
+  <div style="background:#fff; border:1.5px solid var(--borda); border-radius:16px; padding:20px; margin-bottom:8px;">
+    <div class="campo-group">
+      <label class="campo-label">Nome completo *</label>
+      <input class="campo-input" type="text" id="clienteNome" placeholder="Seu nome">
+    </div>
+    <div class="campo-group" style="margin-bottom:0;">
+      <label class="campo-label">Telefone / WhatsApp *</label>
+      <input class="campo-input" type="tel" id="clienteTel" placeholder="(85) 9 0000-0000">
+    </div>
+  </div>
+
+  <!-- ENTREGA OU RETIRADA -->
+  <div class="section-title"><span class="emoji-icon">🛵</span> Entrega ou retirada</div>
+  <div style="background:#fff; border:1.5px solid var(--borda); border-radius:16px; padding:20px; margin-bottom:8px;">
+    <div class="entrega-toggle">
+      <button class="toggle-btn active-retirada" id="btnRetirada" onclick="setModalEntrega('retirada')">🏠 Retirar no local</button>
+      <button class="toggle-btn" id="btnEntrega" onclick="setModalEntrega('entrega')">🛵 Entrega no endereço</button>
+    </div>
+
+    <div class="entrega-fields" id="camposEntrega">
+      <div class="taxa-info">
+        <span>🚗 Taxa de entrega (fixa)</span>
+        <span class="taxa-valor">R$ 3,00</span>
+      </div>
+      <div class="campo-group">
+        <label class="campo-label">Rua / Avenida *</label>
+        <input class="campo-input" type="text" id="endRua" placeholder="Ex: Rua das Flores">
+      </div>
+      <div class="campo-row">
+        <div class="campo-group" style="margin-bottom:0;">
+          <label class="campo-label">Número *</label>
+          <input class="campo-input" type="text" id="endNum" placeholder="Ex: 123">
+        </div>
+        <div class="campo-group" style="margin-bottom:0;">
+          <label class="campo-label">Complemento</label>
+          <input class="campo-input" type="text" id="endComp" placeholder="Apto, casa, bloco...">
+        </div>
+      </div>
+      <div class="campo-group" style="margin-top:12px;">
+        <label class="campo-label">Bairro *</label>
+        <input class="campo-input" type="text" id="endBairro" placeholder="Ex: Centro">
+      </div>
+      <div class="campo-group" style="margin-bottom:0;">
+        <label class="campo-label">Referência / Ponto de referência</label>
+        <input class="campo-input" type="text" id="endRef" placeholder="Ex: Próximo ao mercado X">
+      </div>
+    </div>
+
+    <div class="campo-group" style="margin-bottom:0; margin-top:4px;" id="horarioGroup">
+      <label class="campo-label">⏰ Horário desejado para receber</label>
+      <input class="campo-input" type="time" id="horarioEntrega">
+      <p style="font-size:12px; color:var(--texto-suave); margin-top:5px;">Deixe em branco para o mais rápido possível</p>
+    </div>
+  </div>
+
+  <!-- TIPO DE MARMITA -->
+  <div class="section-title"><span class="emoji-icon">🍱</span> Escolha a marmita</div>
+  <div class="marmita-grid">
+    <div class="marmita-card" id="card-P" onclick="selecionarMarmita('P')">
+      <div class="marmita-tag">Marmita P</div>
+      <div class="marmita-name">Pequena</div>
+      <div class="marmita-weight">500g • 1 proteína</div>
+      <div class="marmita-price">R$ 10,00</div>
+      <div class="marmita-info">Ideal para 1 pessoa</div>
+    </div>
+    <div class="marmita-card" id="card-G" onclick="selecionarMarmita('G')">
+      <div class="marmita-tag" style="background:#2D6A4F;">Marmita G</div>
+      <div class="marmita-name">Grande</div>
+      <div class="marmita-weight">700g • 2 proteínas</div>
+      <div class="marmita-price" style="color:#2D6A4F;">R$ 16,00</div>
+      <div class="marmita-info">Porção reforçada</div>
+    </div>
+    <div class="marmita-card" id="card-B" onclick="selecionarMarmita('B')">
+      <div class="marmita-tag" style="background:#B07000;">Porção</div>
+      <div class="marmita-name">Baião</div>
+      <div class="marmita-weight">Porção de baião de dois</div>
+      <div class="marmita-price" style="color:#B07000;">R$ 10,00</div>
+      <div class="marmita-info">Acompanhamento especial</div>
+    </div>
+  </div>
+
+  <!-- QTD MARMITA -->
+  <div style="background:#fff; border:1.5px solid var(--borda); border-radius:12px; padding:14px 18px; margin-top:10px; display:flex; align-items:center; justify-content:space-between;">
+    <span style="font-weight:500; font-size:15px;">Quantidade</span>
+    <div class="qty-wrap">
+      <button class="qty-btn" onclick="alterarQtd(-1)">−</button>
+      <span class="qty-num" id="qtdNum">1</span>
+      <button class="qty-btn" onclick="alterarQtd(1)">+</button>
+    </div>
+  </div>
+
+  <!-- PROTEINAS -->
+  <div class="section-title"><span class="emoji-icon">🍗</span> Escolha a proteína</div>
+  <div class="proteinas-section">
+    <div class="proteinas-notice" id="proteinasNotice">
+      👆 Selecione até <strong id="maxProtNotice">1 proteína</strong> para a sua marmita
+    </div>
+    <div class="proteinas-grid" id="proteinasGrid">
+    </div>
+  </div>
+
+  <!-- GUARNICOES -->
+  <div class="section-title"><span class="emoji-icon">🥗</span> Guarnições & Acompanhamentos</div>
+  <div style="background:#fff; border:1.5px solid var(--borda); border-radius:16px; padding:18px; margin-bottom:8px;">
+    <p style="font-size:13px; color:var(--texto-suave); margin-bottom:14px;">Selecione os acompanhamentos desejados</p>
+    <div class="guarnicoes-grid" id="guarnicoesGrid"></div>
+  </div>
+
+  <!-- BEBIDAS -->
+  <div class="section-title"><span class="emoji-icon">🥤</span> Bebidas</div>
+  <div class="bebidas-grid" id="bebidasGrid"></div>
+
+  <!-- OBSERVACOES -->
+  <div class="section-title"><span class="emoji-icon">📝</span> Observações</div>
+  <div style="background:#fff; border:1.5px solid var(--borda); border-radius:16px; padding:18px;">
+    <textarea class="obs-textarea" id="obs" placeholder="Alguma restrição alimentar, pedido especial ou informação adicional?"></textarea>
+  </div>
+
+</div>
+
+<!-- BARRA RESUMO -->
+<div class="resumo-bar">
+  <div class="resumo-total">
+    <label>Total do pedido</label>
+    <span id="totalBar">R$ 0,00</span>
+  </div>
+  <button class="btn-pedido" onclick="abrirModal()" id="btnPedido">
+    Ver resumo →
+  </button>
+</div>
+
+<!-- MODAL RESUMO -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Resumo do Pedido</div>
+      <button class="modal-close" onclick="fecharModal()">✕</button>
+    </div>
+
+    <div id="erroModal" class="error-msg"></div>
+
+    <div style="background:#fff; border:1.5px solid var(--borda); border-radius:14px; padding:16px 18px; margin-bottom:20px;">
+      <div id="resumoItens"></div>
+      <div class="resumo-total-final">
+        <span>Total</span>
+        <span id="totalModal" style="color:var(--laranja);">R$ 0,00</span>
+      </div>
+    </div>
+
+    <div style="background:#fff; border:1.5px solid var(--borda); border-radius:14px; padding:16px 18px; margin-bottom:8px;">
+      <p style="font-size:13px; font-weight:600; margin-bottom:12px; color:var(--texto-suave);">CONFIRME SEUS DADOS</p>
+      <div class="campo-group">
+        <label class="campo-label">Nome</label>
+        <input class="campo-input" type="text" id="modalNome" placeholder="Seu nome">
+      </div>
+      <div class="campo-group" style="margin-bottom:0;">
+        <label class="campo-label">WhatsApp</label>
+        <input class="campo-input" type="tel" id="modalTel" placeholder="(85) 9 0000-0000">
+      </div>
+    </div>
+
+    <button class="btn-whatsapp" onclick="enviarWhatsApp()">
+      💬 Enviar pedido via WhatsApp
+    </button>
+  </div>
+</div>
+
+<script>
+const proteinas = [
+  'Coxa e Sobrecoxa',
+  'Peito de Frango Grelhado',
+  'Ovo Frito',
+  'Frango ao Molho',
+  'Bisteca Suína',
+  'Calabresa Acebolada',
+  'Bife Acebolado',
+  'Carne Cozida'
+];
+
+const guarnicoes = [
+  { nome: 'Arroz', grupo: 'Guarnições' },
+  { nome: 'Baião', grupo: 'Guarnições' },
+  { nome: 'Feijão', grupo: 'Guarnições' },
+  { nome: 'Macarrão', grupo: 'Guarnições' },
+  { nome: 'Legumes Cozidos', grupo: 'Saladas' },
+  { nome: 'Salada Crua', grupo: 'Saladas' },
+  { nome: 'Farofa', grupo: 'Complementos' },
+];
+
+const bebidas = [
+  { nome: 'Refrigerante 250ml', preco: 3.00 },
+  { nome: 'Refrigerante Lata', preco: 5.00 },
+  { nome: 'Refrigerante 600ml', preco: 7.00 },
+  { nome: 'Água s/ Gás', preco: 2.00 },
+  { nome: 'Água c/ Gás', preco: 2.50 },
+];
+
+const precos = { P: 10, G: 16, B: 10 };
+
+let estado = {
+  marmita: null,
+  qtd: 1,
+  proteinas: [],
+  guarnicoes: [],
+  bebida: null,
+  tipoEntrega: 'retirada',
+  taxa: 0,
+  obs: ''
+};
+
+function setModalEntrega(tipo) {
+  estado.tipoEntrega = tipo;
+  document.getElementById('btnRetirada').className = 'toggle-btn' + (tipo === 'retirada' ? ' active-retirada' : '');
+  document.getElementById('btnEntrega').className = 'toggle-btn' + (tipo === 'entrega' ? ' active-entrega' : '');
+  document.getElementById('camposEntrega').classList.toggle('show', tipo === 'entrega');
+  estado.taxa = (tipo === 'entrega') ? 3 : 0; atualizarTotal();
+}
+
+
+
+function renderProteinas() {
+  const grid = document.getElementById('proteinasGrid');
+  const max = estado.marmita === 'G' ? 2 : 1;
+  grid.innerHTML = '';
+  proteinas.forEach((p, i) => {
+    const sel = estado.proteinas.includes(p);
+    const dis = !sel && estado.proteinas.length >= max;
+    const div = document.createElement('div');
+    div.className = 'proteina-item' + (sel ? ' selected' : '') + (dis ? ' disabled' : '');
+    div.innerHTML = `<div class="proteina-check">${sel ? '✓' : ''}</div>${p}`;
+    if (!dis) div.onclick = () => toggleProteina(p);
+    grid.appendChild(div);
+  });
+}
+
+function toggleProteina(p) {
+  const max = estado.marmita === 'G' ? 2 : 1;
+  if (estado.proteinas.includes(p)) {
+    estado.proteinas = estado.proteinas.filter(x => x !== p);
+  } else if (estado.proteinas.length < max) {
+    estado.proteinas.push(p);
+  }
+  renderProteinas();
+  atualizarTotal();
+}
+
+function renderGuarnicoes() {
+  const grid = document.getElementById('guarnicoesGrid');
+  grid.innerHTML = '';
+  guarnicoes.forEach(g => {
+    const sel = estado.guarnicoes.includes(g.nome);
+    const div = document.createElement('div');
+    div.className = 'guarnicao-item' + (sel ? ' selected' : '');
+    div.innerHTML = `<div class="g-check">${sel ? '✓' : ''}</div>${g.nome}`;
+    div.onclick = () => {
+      if (sel) estado.guarnicoes = estado.guarnicoes.filter(x => x !== g.nome);
+      else estado.guarnicoes.push(g.nome);
+      renderGuarnicoes();
+    };
+    grid.appendChild(div);
+  });
+}
+
+function renderBebidas() {
+  const grid = document.getElementById('bebidasGrid');
+  grid.innerHTML = '';
+  bebidas.forEach(b => {
+    const sel = estado.bebida === b.nome;
+    const div = document.createElement('div');
+    div.className = 'bebida-item' + (sel ? ' selected' : '');
+    div.innerHTML = `<div class="bebida-nome">${b.nome}</div><div class="bebida-preco">R$ ${b.preco.toFixed(2).replace('.',',')}</div>`;
+    div.onclick = () => {
+      estado.bebida = sel ? null : b.nome;
+      atualizarTotal();
+      renderBebidas();
+    };
+    grid.appendChild(div);
+  });
+}
+
+function selecionarMarmita(tipo) {
+  estado.marmita = tipo;
+  estado.proteinas = [];
+  ['P','G','B'].forEach(t => {
+    document.getElementById('card-'+t).classList.toggle('selected', t === tipo);
+  });
+  const max = tipo === 'G' ? 2 : 1;
+  const notice = document.getElementById('proteinasNotice');
+  const maxNote = document.getElementById('maxProtNotice');
+  if (tipo === 'B') {
+    notice.textContent = '⚠️ Porção de Baião não inclui proteína';
+    document.getElementById('proteinasGrid').style.opacity = '0.4';
+    document.getElementById('proteinasGrid').style.pointerEvents = 'none';
+  } else {
+    notice.innerHTML = `👆 Selecione até <strong>${max} proteína${max > 1 ? 's' : ''}</strong> para a sua marmita`;
+    document.getElementById('proteinasGrid').style.opacity = '1';
+    document.getElementById('proteinasGrid').style.pointerEvents = 'auto';
+  }
+  renderProteinas();
+  atualizarTotal();
+}
+
+function alterarQtd(delta) {
+  estado.qtd = Math.max(1, estado.qtd + delta);
+  document.getElementById('qtdNum').textContent = estado.qtd;
+  atualizarTotal();
+}
+
+function calcTotal() {
+  let t = 0;
+  if (estado.marmita) t += precos[estado.marmita] * estado.qtd;
+  if (estado.bebida) {
+    const b = bebidas.find(x => x.nome === estado.bebida);
+    if (b) t += b.preco;
+  }
+  if (estado.tipoEntrega === 'entrega') t += estado.taxa;
+  return t;
+}
+
+function atualizarTotal() {
+  const t = calcTotal();
+  document.getElementById('totalBar').textContent = 'R$ ' + t.toFixed(2).replace('.',',');
+  document.getElementById('cartCount').textContent = estado.marmita ? estado.qtd : 0;
+}
+
+function abrirModal() {
+  const nome = document.getElementById('clienteNome').value;
+  const tel = document.getElementById('clienteTel').value;
+  document.getElementById('modalNome').value = nome;
+  document.getElementById('modalTel').value = tel;
+  renderResumo();
+  document.getElementById('modal').classList.add('open');
+}
+
+function fecharModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+function renderResumo() {
+  const container = document.getElementById('resumoItens');
+  container.innerHTML = '';
+
+  if (!estado.marmita) {
+    container.innerHTML = '<p style="color:var(--texto-suave); font-size:14px;">Nenhuma marmita selecionada ainda.</p>';
+    document.getElementById('totalModal').textContent = 'R$ 0,00';
+    return;
+  }
+
+  const nomes = { P: 'Marmita P (500g)', G: 'Marmita G (700g)', B: 'Porção de Baião' };
+  let html = '';
+
+  html += `<div class="resumo-item">
+    <div>
+      <div class="resumo-item-nome">${nomes[estado.marmita]} × ${estado.qtd}</div>
+      ${estado.proteinas.length ? '<div class="resumo-item-detalhe">🍗 ' + estado.proteinas.join(', ') + '</div>' : ''}
+      ${estado.guarnicoes.length ? '<div class="resumo-item-detalhe">🥗 ' + estado.guarnicoes.join(', ') + '</div>' : ''}
+    </div>
+    <div class="resumo-item-preco">R$ ${(precos[estado.marmita] * estado.qtd).toFixed(2).replace('.',',')}</div>
+  </div>`;
+
+  if (estado.bebida) {
+    const b = bebidas.find(x => x.nome === estado.bebida);
+    html += `<div class="resumo-item">
+      <div class="resumo-item-nome">🥤 ${estado.bebida}</div>
+      <div class="resumo-item-preco">R$ ${b.preco.toFixed(2).replace('.',',')}</div>
+    </div>`;
+  }
+
+  if (estado.tipoEntrega === 'entrega') {
+    const rua = document.getElementById('endRua').value;
+    const num = document.getElementById('endNum').value;
+    const comp = document.getElementById('endComp').value;
+    const bairro = document.getElementById('endBairro').value;
+    const ref = document.getElementById('endRef').value;
+    const end = [rua + (num ? ', ' + num : ''), comp, bairro, ref].filter(Boolean).join(' — ');
+    html += `<div class="resumo-item">
+      <div><div class="resumo-item-nome">🛵 Entrega</div><div class="resumo-item-detalhe">${end || 'Endereço não preenchido'}</div></div>
+      <div class="resumo-item-preco">R$ ${estado.taxa.toFixed(2).replace('.',',')}</div>
+    </div>`;
+  } else {
+    html += `<div class="resumo-item">
+      <div class="resumo-item-nome">🏠 Retirar no local</div>
+      <div class="resumo-item-preco" style="color:#2D6A4F;">Grátis</div>
+    </div>`;
+  }
+
+  const horario = document.getElementById('horarioEntrega').value;
+  if (horario) {
+    html += `<div class="resumo-item">
+      <div class="resumo-item-nome">⏰ Horário desejado: ${horario}</div>
+    </div>`;
+  }
+
+  const obs = document.getElementById('obs').value;
+  if (obs) {
+    html += `<div class="resumo-item">
+      <div><div class="resumo-item-nome">📝 Observações</div><div class="resumo-item-detalhe">${obs}</div></div>
+    </div>`;
+  }
+
+  container.innerHTML = html;
+  document.getElementById('totalModal').textContent = 'R$ ' + calcTotal().toFixed(2).replace('.',',');
+}
+
+function enviarWhatsApp() {
+  const nome = document.getElementById('modalNome').value.trim();
+  const tel = document.getElementById('modalTel').value.trim();
+  const erroDiv = document.getElementById('erroModal');
+
+  erroDiv.style.display = 'none';
+
+  if (!nome || !tel) {
+    erroDiv.textContent = '⚠️ Por favor, preencha seu nome e telefone.';
+    erroDiv.style.display = 'block';
+    return;
+  }
+
+  if (!estado.marmita) {
+    erroDiv.textContent = '⚠️ Selecione ao menos uma marmita.';
+    erroDiv.style.display = 'block';
+    return;
+  }
+
+  if (estado.marmita !== 'B' && estado.proteinas.length === 0) {
+    erroDiv.textContent = '⚠️ Escolha pelo menos 1 proteína para a marmita.';
+    erroDiv.style.display = 'block';
+    return;
+  }
+
+  if (estado.tipoEntrega === 'entrega') {
+    const rua = document.getElementById('endRua').value.trim();
+    const num = document.getElementById('endNum').value.trim();
+    const bairro = document.getElementById('endBairro').value.trim();
+    if (!rua || !num || !bairro) {
+      erroDiv.textContent = '⚠️ Preencha o endereço completo (rua, número e bairro).';
+      erroDiv.style.display = 'block';
+      return;
+    }
+  }
+
+  const nomes = { P: 'Marmita P (500g)', G: 'Marmita G (700g)', B: 'Porção de Baião' };
+  let msg = `🍱 *NOVO PEDIDO - Marmita Express*\n\n`;
+  msg += `👤 *Cliente:* ${nome}\n`;
+  msg += `📱 *Telefone:* ${tel}\n\n`;
+  msg += `*Pedido:*\n`;
+  msg += `• ${nomes[estado.marmita]} × ${estado.qtd} — R$ ${(precos[estado.marmita] * estado.qtd).toFixed(2).replace('.',',')}\n`;
+
+  if (estado.proteinas.length) msg += `• Proteína(s): ${estado.proteinas.join(', ')}\n`;
+  if (estado.guarnicoes.length) msg += `• Acompanhamentos: ${estado.guarnicoes.join(', ')}\n`;
+  if (estado.bebida) {
+    const b = bebidas.find(x => x.nome === estado.bebida);
+    msg += `• Bebida: ${estado.bebida} — R$ ${b.preco.toFixed(2).replace('.',',')}\n`;
+  }
+
+  if (estado.tipoEntrega === 'entrega') {
+    const rua = document.getElementById('endRua').value.trim();
+    const num = document.getElementById('endNum').value.trim();
+    const comp = document.getElementById('endComp').value.trim();
+    const bairro = document.getElementById('endBairro').value.trim();
+    const ref = document.getElementById('endRef').value.trim();
+    msg += `\n📍 *Entrega em:*\n`;
+    msg += `${rua}, ${num}${comp ? ' — ' + comp : ''}\n`;
+    msg += `Bairro: ${bairro}\n`;
+    if (ref) msg += `Ref: ${ref}\n`;
+    msg += `• Taxa de entrega: R$ ${estado.taxa.toFixed(2).replace('.',',')}\n`;
+  } else {
+    msg += `\n🏠 *Retirada no local*\n`;
+  }
+
+  const horario = document.getElementById('horarioEntrega').value;
+  if (horario) msg += `⏰ *Horário desejado:* ${horario}\n`;
+
+  const obs = document.getElementById('obs').value.trim();
+  if (obs) msg += `\n📝 *Obs:* ${obs}\n`;
+
+  msg += `\n💰 *TOTAL: R$ ${calcTotal().toFixed(2).replace('.',',')}*`;
+  if (estado.tipoEntrega === 'entrega') msg += ` _(inclui taxa de entrega)_`;
+
+  const numero = '5585987667548';
+  const url = `https://wa.me/${numero}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+}
+
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === this) fecharModal();
+});
+
+renderProteinas();
+renderGuarnicoes();
+renderBebidas();
+atualizarTotal();
+</script>
+</body>
+</html>
